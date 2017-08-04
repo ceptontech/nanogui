@@ -20,6 +20,7 @@
 #include <nanogui/combobox.h>
 #include <nanogui/colorpicker.h>
 #include <nanogui/layout.h>
+#include <nanogui/vscrollpanel.h>
 #include <cassert>
 
 NAMESPACE_BEGIN(nanogui)
@@ -129,18 +130,15 @@ public:
                          const std::string &title = "Untitled") {
         assert(mScreen);
         mWindow = new Window(mScreen, title);
-        mLayout = new AdvancedGridLayout({10, 0, 10, 0}, {});
-        mLayout->setMargin(10);
-        mLayout->setColStretch(2, 1);
         mWindow->setPosition(pos);
-        mWindow->setLayout(mLayout);
-        mWindow->setVisible(true);
+		setContainer(mWindow);
+		mWindow->setVisible(true);
         return mWindow;
     }
 
     /// Add a new group that may contain several sub-widgets
     Label *addGroup(const std::string &caption) {
-        Label* label = new Label(mWindow, caption, mGroupFontName, mGroupFontSize);
+        Label* label = new Label(mContainer, caption, mGroupFontName, mGroupFontSize);
         if (mLayout->rowCount() > 0)
             mLayout->appendRow(mPreGroupSpacing); /* Spacing */
         mLayout->appendRow(0);
@@ -153,8 +151,7 @@ public:
     template <typename Type> detail::FormWidget<Type> *
     addVariable(const std::string &label, const std::function<void(const Type &)> &setter,
                 const std::function<Type()> &getter, bool editable = true) {
-        Label *labelW = new Label(mWindow, label, mLabelFontName, mLabelFontSize);
-        auto widget = new detail::FormWidget<Type>(mWindow);
+        auto widget = new detail::FormWidget<Type>(mContainer);
         auto refresh = [widget, getter] {
             Type value = getter(), current = widget->value();
             if (value != current)
@@ -168,11 +165,7 @@ public:
         widget->setFixedSize(Vector2i(fs.x() != 0 ? fs.x() : mFixedSize.x(),
                                       fs.y() != 0 ? fs.y() : mFixedSize.y()));
         mRefreshCallbacks.push_back(refresh);
-        if (mLayout->rowCount() > 0)
-            mLayout->appendRow(mVariableSpacing);
-        mLayout->appendRow(0);
-        mLayout->setAnchor(labelW, AdvancedGridLayout::Anchor(1, mLayout->rowCount()-1));
-        mLayout->setAnchor(widget, AdvancedGridLayout::Anchor(3, mLayout->rowCount()-1));
+		addWidget(label, widget);
         return widget;
     }
 
@@ -188,23 +181,22 @@ public:
 
     /// Add a button with a custom callback
     Button *addButton(const std::string &label, const std::function<void()> &cb) {
-        Button *button = new Button(mWindow, label);
+        Button *button = new Button(mContainer, label);
         button->setCallback(cb);
         button->setFixedHeight(25);
-        if (mLayout->rowCount() > 0)
-            mLayout->appendRow(mVariableSpacing);
-        mLayout->appendRow(0);
-        mLayout->setAnchor(button, AdvancedGridLayout::Anchor(1, mLayout->rowCount()-1, 3, 1));
+		addWidget("", button);
         return button;
     }
 
     /// Add an arbitrary (optionally labeled) widget to the layout
     void addWidget(const std::string &label, Widget *widget) {
-        mLayout->appendRow(0);
+		if (mLayout->rowCount() > 0)
+			mLayout->appendRow(mVariableSpacing);
+		mLayout->appendRow(0);
         if (label == "") {
             mLayout->setAnchor(widget, AdvancedGridLayout::Anchor(1, mLayout->rowCount()-1, 3, 1));
         } else {
-            Label *labelW = new Label(mWindow, label, mLabelFontName, mLabelFontSize);
+            Label *labelW = new Label(mContainer, label, mLabelFontName, mLabelFontSize);
             mLayout->setAnchor(labelW, AdvancedGridLayout::Anchor(1, mLayout->rowCount()-1));
             mLayout->setAnchor(widget, AdvancedGridLayout::Anchor(3, mLayout->rowCount()-1));
         }
@@ -216,15 +208,28 @@ public:
             callback();
     }
 
+	void initLayout() {
+		mLayout = new AdvancedGridLayout({ 10, 0, 10, 0 }, {});
+		mLayout->setMargin(10);
+		mLayout->setColStretch(2, 1);
+		mContainer->setLayout(mLayout);
+	}
+
     /// Access the currently active \ref Window instance
     Window *window() { return mWindow; }
     void setWindow(Window *window) {
         mWindow = window;
-        mLayout = dynamic_cast<AdvancedGridLayout *>(window->layout());
-        if (mLayout == nullptr)
-            throw std::runtime_error(
-                "Internal error: window has an incompatible layout!");
+		setContainer(window);
     }
+
+	Widget *container() { return mContainer; }
+	void setContainer(Widget *container) {
+		mContainer = container;
+		mLayout = dynamic_cast<AdvancedGridLayout *>(container->layout());
+		if (mLayout == nullptr) {
+			initLayout();
+		}
+	}
 
     /// Specify a fixed size for newly added widgets
     void setFixedSize(const Vector2i &fw) { mFixedSize = fw; }
@@ -245,6 +250,7 @@ public:
 protected:
     ref<Screen> mScreen;
     ref<Window> mWindow;
+	ref<Widget> mContainer;
     ref<AdvancedGridLayout> mLayout;
     std::vector<std::function<void()>> mRefreshCallbacks;
     std::string mGroupFontName = "sans-bold";
