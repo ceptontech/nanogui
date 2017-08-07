@@ -465,6 +465,9 @@ bool TextBox::keyboardEvent(int key, int /* scancode */, int action, int modifie
             } else if (key == GLFW_KEY_V && modifiers == SYSTEM_COMMAND_MOD) {
                 deleteSelection();
                 pasteFromClipboard();
+            } else if (key == GLFW_KEY_ESCAPE) {
+              mValueTemp = mValue;
+              focusEvent(false);
             }
 
             mValidFormat =
