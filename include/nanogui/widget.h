@@ -40,6 +40,11 @@ public:
     /// Set the parent widget
     void setParent(Widget *parent) { mParent = parent; }
 
+    /// Dispose the widget 
+    void dispose() {
+        mParent->removeChild(this);
+    }
+
     /// Return the used \ref Layout generator
     Layout *layout() { return mLayout; }
     /// Return the used \ref Layout generator
@@ -143,6 +148,9 @@ public:
 
     /// Remove a child widget by value
     void removeChild(const Widget *widget);
+
+    /// Remove all children
+    void Widget::removeChildren();
 
     /// Retrieves the child at the specific position
     const Widget* childAt(int index) const { return mChildren[index]; }
