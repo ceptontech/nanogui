@@ -150,7 +150,7 @@ public:
     void removeChild(const Widget *widget);
 
     /// Remove all children
-    void Widget::removeChildren();
+    void removeChildren();
 
     /// Retrieves the child at the specific position
     const Widget* childAt(int index) const { return mChildren[index]; }
