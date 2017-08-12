@@ -29,6 +29,10 @@ PopupButton::PopupButton(Widget *parent, const std::string &caption, int buttonI
     mPopup->setVisible(false);
 }
 
+PopupButton::~PopupButton() {
+  mPopup->dispose();
+}
+
 Vector2i PopupButton::preferredSize(NVGcontext *ctx) const {
     return Button::preferredSize(ctx) + Vector2i(15, 0);
 }
