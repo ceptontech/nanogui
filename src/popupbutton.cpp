@@ -30,7 +30,9 @@ PopupButton::PopupButton(Widget *parent, const std::string &caption, int buttonI
 }
 
 PopupButton::~PopupButton() {
-  mPopup->dispose();
+  if (mPopup) {
+    mPopup->dispose();
+  }
 }
 
 Vector2i PopupButton::preferredSize(NVGcontext *ctx) const {

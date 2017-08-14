@@ -35,8 +35,8 @@ public:
     void setSide(Popup::Side popupSide);
     Popup::Side side() const { return mPopup->side(); }
 
-    Popup *popup() { return mPopup; }
-    const Popup *popup() const { return mPopup; }
+    Popup *popup() { return mPopup.get(); }
+    const Popup *popup() const { return mPopup.get(); }
 
     virtual void draw(NVGcontext* ctx) override;
     virtual Vector2i preferredSize(NVGcontext *ctx) const override;
@@ -45,7 +45,7 @@ public:
     virtual void save(Serializer &s) const override;
     virtual bool load(Serializer &s) override;
 protected:
-    Popup *mPopup;
+    nanogui::ref<Popup> mPopup;
     int mChevronIcon;
 public:
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW
