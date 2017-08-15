@@ -40,7 +40,7 @@ public:
     /// Set the parent widget
     void setParent(Widget *parent) { mParent = parent; }
 
-    /// Dispose the widget 
+    /// Dispose the widget
     void dispose() {
         mParent->removeChild(this);
     }
@@ -118,10 +118,10 @@ public:
         bool visible = true;
         const Widget *widget = this;
         while (widget) {
-            visible &= widget->visible();
+            if (!widget->visible()) return false;
             widget = widget->parent();
         }
-        return visible;
+        return true;
     }
 
     /// Return the number of child widgets

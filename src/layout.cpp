@@ -41,7 +41,7 @@ Vector2i BoxLayout::preferredSize(NVGcontext *ctx, const Widget *widget) const {
     bool first = true;
     int axis1 = (int) mOrientation, axis2 = ((int) mOrientation + 1)%2;
     for (auto w : widget->children()) {
-        if (!w->visible())
+        if (!w->visibleRecursive())
             continue;
         if (first)
             first = false;
@@ -84,7 +84,7 @@ void BoxLayout::performLayout(NVGcontext *ctx, Widget *widget) const {
 
     bool first = true;
     for (auto w : widget->children()) {
-        if (!w->visible())
+        if (!w->visibleRecursive())
             continue;
         if (first)
             first = false;
@@ -134,7 +134,7 @@ Vector2i GroupLayout::preferredSize(NVGcontext *ctx, const Widget *widget) const
 
     bool first = true, indent = false;
     for (auto c : widget->children()) {
-        if (!c->visible())
+        if (!c->visibleRecursive())
             continue;
         const Label *label = dynamic_cast<const Label *>(c);
         if (!first)
@@ -168,7 +168,7 @@ void GroupLayout::performLayout(NVGcontext *ctx, Widget *widget) const {
 
     bool first = true, indent = false;
     for (auto c : widget->children()) {
-        if (!c->visible())
+        if (!c->visibleRecursive())
             continue;
         const Label *label = dynamic_cast<const Label *>(c);
         if (!first)
@@ -218,13 +218,13 @@ Vector2i GridLayout::preferredSize(NVGcontext *ctx,
 
 void GridLayout::computeLayout(NVGcontext *ctx, const Widget *widget, std::vector<int> *grid) const {
     int axis1 = (int) mOrientation, axis2 = (axis1 + 1) % 2;
-    size_t numChildren = widget->children().size(), visibleChildren = 0;
+    size_t numChildren = widget->children().size(), visibleRecursiveChildren = 0;
     for (auto w : widget->children())
-        visibleChildren += w->visible() ? 1 : 0;
+        visibleRecursiveChildren += w->visibleRecursive() ? 1 : 0;
 
     Vector2i dim;
     dim[axis1] = mResolution;
-    dim[axis2] = (int) ((visibleChildren + mResolution - 1) / mResolution);
+    dim[axis2] = (int) ((visibleRecursiveChildren + mResolution - 1) / mResolution);
 
     grid[axis1].clear(); grid[axis1].resize(dim[axis1], 0);
     grid[axis2].clear(); grid[axis2].resize(dim[axis2], 0);
@@ -237,7 +237,7 @@ void GridLayout::computeLayout(NVGcontext *ctx, const Widget *widget, std::vecto
                 if (child >= numChildren)
                     return;
                 w = widget->children()[child++];
-            } while (!w->visible());
+            } while (!w->visibleRecursive());
 
             Vector2i ps = w->preferredSize(ctx);
             Vector2i fs = w->fixedSize();
@@ -305,7 +305,7 @@ void GridLayout::performLayout(NVGcontext *ctx, Widget *widget) const {
                 if (child >= numChildren)
                     return;
                 w = widget->children()[child++];
-            } while (!w->visible());
+            } while (!w->visibleRecursive());
 
             Vector2i ps = w->preferredSize(ctx);
             Vector2i fs = w->fixedSize();
@@ -319,7 +319,7 @@ void GridLayout::performLayout(NVGcontext *ctx, Widget *widget) const {
                 int axis = (axis1 + j) % 2;
                 int item = j == 0 ? i1 : i2;
                 Alignment align = alignment(axis, item);
-                
+
                 switch (align) {
                     case Alignment::FillMinimum:
                         targetSize[axis] = fs[axis] ? fs[axis] : grid[axis][item];
@@ -385,7 +385,7 @@ void AdvancedGridLayout::performLayout(NVGcontext *ctx, Widget *widget) const {
             grid[axis][i] += grid[axis][i-1];
 
         for (Widget *w : widget->children()) {
-            if (!w->visible())
+            if (!w->visibleRecursive())
                 continue;
             Anchor anchor = this->anchor(w);
 
@@ -444,7 +444,7 @@ void AdvancedGridLayout::computeLayout(NVGcontext *ctx, const Widget *widget,
         for (int phase = 0; phase < 2; ++phase) {
             for (auto pair : mAnchor) {
                 const Widget *w = pair.first;
-                if (!w->visible())
+                if (!w->visibleRecursive())
                     continue;
                 const Anchor &anchor = pair.second;
                 if ((anchor.size[axis] == 1) != (phase == 0))
