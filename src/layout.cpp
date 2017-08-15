@@ -101,18 +101,20 @@ void BoxLayout::performLayout(NVGcontext *ctx, Widget *widget) const {
         pos[axis1] = position;
 
         switch (mAlignment) {
+            case Alignment::FillMinimum:
+                targetSize[axis2] = fs[axis2] ? fs[axis2] : (containerSize[axis2] - mMargin * 2);
             case Alignment::Minimum:
                 pos[axis2] += mMargin;
                 break;
+            case Alignment::FillMiddle:
+                targetSize[axis2] = fs[axis2] ? fs[axis2] : (containerSize[axis2] - mMargin * 2);
             case Alignment::Middle:
                 pos[axis2] += (containerSize[axis2] - targetSize[axis2]) / 2;
                 break;
+            case Alignment::FillMaximum:
+                targetSize[axis2] = fs[axis2] ? fs[axis2] : (containerSize[axis2] - mMargin * 2);
             case Alignment::Maximum:
                 pos[axis2] += containerSize[axis2] - targetSize[axis2] - mMargin * 2;
-                break;
-            case Alignment::Fill:
-                pos[axis2] += mMargin;
-                targetSize[axis2] = fs[axis2] ? fs[axis2] : (containerSize[axis2] - mMargin * 2);
                 break;
         }
 
@@ -317,18 +319,21 @@ void GridLayout::performLayout(NVGcontext *ctx, Widget *widget) const {
                 int axis = (axis1 + j) % 2;
                 int item = j == 0 ? i1 : i2;
                 Alignment align = alignment(axis, item);
-
+                
                 switch (align) {
+                    case Alignment::FillMinimum:
+                        targetSize[axis] = fs[axis] ? fs[axis] : grid[axis][item];
                     case Alignment::Minimum:
                         break;
+                    case Alignment::FillMiddle:
+                        targetSize[axis] = fs[axis] ? fs[axis] : grid[axis][item];
                     case Alignment::Middle:
                         itemPos[axis] += (grid[axis][item] - targetSize[axis]) / 2;
                         break;
+                    case Alignment::FillMaximum:
+                        targetSize[axis] = fs[axis] ? fs[axis] : grid[axis][item];
                     case Alignment::Maximum:
                         itemPos[axis] += grid[axis][item] - targetSize[axis];
-                        break;
-                    case Alignment::Fill:
-                        targetSize[axis] = fs[axis] ? fs[axis] : grid[axis][item];
                         break;
                 }
             }
@@ -387,19 +392,21 @@ void AdvancedGridLayout::performLayout(NVGcontext *ctx, Widget *widget) const {
             int itemPos = grid[axis][anchor.pos[axis]];
             int cellSize  = grid[axis][anchor.pos[axis] + anchor.size[axis]] - itemPos;
             int ps = w->preferredSize(ctx)[axis], fs = w->fixedSize()[axis];
-            int targetSize = fs ? fs : ps;
-
+            int targetSize = fs ? fs : cellSize;
             switch (anchor.align[axis]) {
+                case Alignment::FillMinimum:
+                    targetSize = fs ? fs : cellSize;
                 case Alignment::Minimum:
                     break;
+                case Alignment::FillMiddle:
+                    targetSize = fs ? fs : cellSize;
                 case Alignment::Middle:
                     itemPos += (cellSize - targetSize) / 2;
                     break;
+                case Alignment::FillMaximum:
+                    targetSize = fs ? fs : cellSize;
                 case Alignment::Maximum:
                     itemPos += cellSize - targetSize;
-                    break;
-                case Alignment::Fill:
-                    targetSize = fs ? fs : cellSize;
                     break;
             }
 

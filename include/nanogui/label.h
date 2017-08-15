@@ -39,6 +39,9 @@ public:
     /// Get the currently active font
     const std::string &font() const { return mFont; }
 
+    void setTextAlignment(int textAlignment) { mTextAlignment = textAlignment; }
+    const int textAlignment() const { return mTextAlignment; }
+
     /// Get the label color
     Color color() const { return mColor; }
     /// Set the label color
@@ -59,6 +62,7 @@ protected:
     std::string mCaption;
     std::string mFont;
     Color mColor;
+    int mTextAlignment;
 public:
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 };

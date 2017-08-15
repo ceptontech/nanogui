@@ -25,7 +25,9 @@ enum class Alignment : uint8_t {
     Minimum = 0,
     Middle,
     Maximum,
-    Fill
+    FillMinimum,
+    FillMiddle,
+    FillMaximum,
 };
 
 /// The direction of data flow for a layout.
@@ -255,16 +257,16 @@ public:
 
         Anchor() { }
 
-        Anchor(int x, int y, Alignment horiz = Alignment::Fill,
-              Alignment vert = Alignment::Fill) {
+        Anchor(int x, int y, Alignment horiz = Alignment::FillMiddle,
+              Alignment vert = Alignment::FillMiddle) {
             pos[0] = (uint8_t) x; pos[1] = (uint8_t) y;
             size[0] = size[1] = 1;
             align[0] = horiz; align[1] = vert;
         }
 
         Anchor(int x, int y, int w, int h,
-              Alignment horiz = Alignment::Fill,
-              Alignment vert = Alignment::Fill) {
+              Alignment horiz = Alignment::FillMiddle,
+              Alignment vert = Alignment::FillMiddle) {
             pos[0] = (uint8_t) x; pos[1] = (uint8_t) y;
             size[0] = (uint8_t) w; size[1] = (uint8_t) h;
             align[0] = horiz; align[1] = vert;
