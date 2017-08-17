@@ -2,11 +2,6 @@
 
 NAMESPACE_BEGIN(nanogui)
 
-void Group::removeWidget(Widget *widget) {
-  mWidgets.erase(std::remove(mWidgets.begin(), mWidgets.end(), widget),
-                 mWidgets.end());
-}
-
 bool Group::visible() const {
   for (const auto &w : mWidgets) {
     if (!w->visible()) return false;

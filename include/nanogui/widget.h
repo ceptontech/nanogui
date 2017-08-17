@@ -43,7 +43,7 @@ public:
 
     Group *group() { return mGroup.get(); }
     const Group *group() const { return mGroup.get(); }
-    void setGroup(Group *group = nullptr);
+    void setGroup(Group *group);
 
     /// Dispose the widget
     void dispose() { mParent->removeChild(this); }

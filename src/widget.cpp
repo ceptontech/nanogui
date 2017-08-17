@@ -26,7 +26,8 @@ Widget::Widget(Widget *parent)
       mFixedSize(Vector2i::Zero()), mVisible(true), mEnabled(true),
       mFocused(false), mMouseFocus(false), mTooltip(""), mFontSize(-1.0f),
       mCursor(Cursor::Arrow) {
-    setGroup();
+    mGroup = new Group();
+    mGroup->addWidget(this);
     if (parent)
         parent->addChild(this);
 }
@@ -46,14 +47,11 @@ void Widget::setParent(Widget *parent) {
 }
 
 void Widget::setGroup(Group *group) {
-  if (!group) group = new Group();
-
-  if (mGroup) {
-    mGroup->removeWidget(this);
+  auto oldGroup = mGroup;
+  for (auto w : oldGroup->widgets()) {
+    w->mGroup = group;
+    group->addWidget(w);
   }
-
-  mGroup = group;
-  mGroup->addWidget(this);
 }
 
 void Widget::setTheme(Theme *theme) {

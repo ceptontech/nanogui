@@ -1,7 +1,8 @@
 #pragma once
 
+#include <set>
+
 #include <nanogui/widget.h>
-#include <vector>
 
 NAMESPACE_BEGIN(nanogui)
 
@@ -9,10 +10,10 @@ class Widget;
 
 class NANOGUI_EXPORT Group : public Object {
  public:
-  void addWidget(Widget *widget) { mWidgets.push_back(widget); }
-  void removeWidget(Widget *widget);
+  void addWidget(Widget *widget) { mWidgets.insert(widget); }
+  void removeWidget(Widget *widget) {mWidgets.erase(widget); }
 
-  const std::vector<Widget *> &widgets() const { return mWidgets; }
+  const std::set<Widget *> &widgets() const { return mWidgets; }
   int widgetCount() const { return mWidgets.size(); }
 
   bool visible() const;
@@ -24,7 +25,7 @@ class NANOGUI_EXPORT Group : public Object {
  private:
   friend Widget;
 
-  std::vector<Widget *> mWidgets;
+  std::set<Widget *> mWidgets;
 };
 
 NAMESPACE_END(nanogui)
