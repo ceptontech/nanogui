@@ -13,6 +13,7 @@
 #include <nanogui/popup.h>
 #include <nanogui/theme.h>
 #include <nanogui/opengl.h>
+#include <nanogui/screen.h>
 #include <nanogui/serializer/core.h>
 
 NAMESPACE_BEGIN(nanogui)
@@ -35,9 +36,20 @@ void Popup::performLayout(NVGcontext *ctx) {
 }
 
 void Popup::refreshRelativePlacement() {
-    mParentWindow->refreshRelativePlacement();
-    mVisible &= mParentWindow->visibleRecursive();
-    mPos = mParentWindow->position() + mAnchorPos - Vector2i(0, mAnchorHeight);
+  mParentWindow->refreshRelativePlacement();
+  mVisible &= mParentWindow->visibleRecursive();
+  mPos = mParentWindow->position() + mAnchorPos - Vector2i(0, mAnchorHeight);
+
+  // Prevent popup from going off screen
+  // int bottomOffset =
+  //     (absolutePosition().y() + mSize.y()) - screen()->size().y();
+  // if (bottomOffset > 0) {
+  //   mPos.y() -= bottomOffset;
+  // }
+  // int topOffset = absolutePosition().y();
+  // if (topOffset < 0) {
+  //   mPos.y() -= topOffset;
+  // }
 }
 
 void Popup::draw(NVGcontext* ctx) {

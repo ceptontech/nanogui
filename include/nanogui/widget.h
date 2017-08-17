@@ -18,6 +18,7 @@
 NAMESPACE_BEGIN(nanogui)
 
 enum class Cursor;// do not put a docstring, this is already documented
+class Group;
 
 /**
  * \class Widget widget.h nanogui/widget.h
@@ -38,12 +39,14 @@ public:
     /// Return the parent widget
     const Widget *parent() const { return mParent; }
     /// Set the parent widget
-    void setParent(Widget *parent) { mParent = parent; }
+    void setParent(Widget *parent);
+
+    Group *group() { return mGroup.get(); }
+    const Group *group() const { return mGroup.get(); }
+    void setGroup(Group *group = nullptr);
 
     /// Dispose the widget
-    void dispose() {
-        mParent->removeChild(this);
-    }
+    void dispose() { mParent->removeChild(this); }
 
     /// Return the used \ref Layout generator
     Layout *layout() { return mLayout; }
@@ -167,8 +170,13 @@ public:
         return new WidgetClass(this, args...);
     }
 
+    /// Walk up the hierarchy and return the parent screen
+    Screen *screen();
+    const Screen *screen() const;
+
     /// Walk up the hierarchy and return the parent window
     Window *window();
+    const Window *window() const;
 
     /// Associate this widget with an ID value (optional)
     void setId(const std::string &id) { mId = id; }
@@ -256,6 +264,7 @@ protected:
 
 protected:
     Widget *mParent;
+    ref<Group> mGroup;
     ref<Theme> mTheme;
     ref<Layout> mLayout;
     std::string mId;

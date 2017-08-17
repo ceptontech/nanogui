@@ -14,6 +14,7 @@
 #include <nanogui/theme.h>
 #include <nanogui/window.h>
 #include <nanogui/opengl.h>
+#include <nanogui/group.h>
 #include <nanogui/screen.h>
 #include <nanogui/serializer/core.h>
 
@@ -25,6 +26,7 @@ Widget::Widget(Widget *parent)
       mFixedSize(Vector2i::Zero()), mVisible(true), mEnabled(true),
       mFocused(false), mMouseFocus(false), mTooltip(""), mFontSize(-1.0f),
       mCursor(Cursor::Arrow) {
+    setGroup();
     if (parent)
         parent->addChild(this);
 }
@@ -34,6 +36,24 @@ Widget::~Widget() {
         if (child)
             child->decRef();
     }
+}
+
+void Widget::setParent(Widget *parent) {
+  if (mParent) {
+    mParent->removeChild(this);
+  }
+  mParent = parent;
+}
+
+void Widget::setGroup(Group *group) {
+  if (!group) group = new Group();
+
+  if (mGroup) {
+    mGroup->removeWidget(this);
+  }
+
+  mGroup = group;
+  mGroup->addWidget(this);
 }
 
 void Widget::setTheme(Theme *theme) {
@@ -176,6 +196,32 @@ int Widget::childIndex(Widget *widget) const {
     return it - mChildren.begin();
 }
 
+Screen *Widget::screen() {
+    Widget *widget = this;
+    while (true) {
+        if (!widget)
+            throw std::runtime_error(
+                "Widget:internal error (could not find parent screen)");
+        Screen *screen = dynamic_cast<Screen *>(widget);
+        if (screen)
+            return screen;
+        widget = widget->parent();
+    }
+}
+
+const Screen *Widget::screen() const {
+    const Widget *widget = this;
+    while (true) {
+        if (!widget)
+            throw std::runtime_error(
+                "Widget:internal error (could not find parent screen)");
+        const Screen *screen = dynamic_cast<const Screen *>(widget);
+        if (screen)
+            return screen;
+        widget = widget->parent();
+    }
+}
+
 Window *Widget::window() {
     Widget *widget = this;
     while (true) {
@@ -183,6 +229,19 @@ Window *Widget::window() {
             throw std::runtime_error(
                 "Widget:internal error (could not find parent window)");
         Window *window = dynamic_cast<Window *>(widget);
+        if (window)
+            return window;
+        widget = widget->parent();
+    }
+}
+
+const Window *Widget::window() const {
+    const Widget *widget = this;
+    while (true) {
+        if (!widget)
+            throw std::runtime_error(
+                "Widget:internal error (could not find parent window)");
+        const Window *window = dynamic_cast<const Window *>(widget);
         if (window)
             return window;
         widget = widget->parent();

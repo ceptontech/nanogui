@@ -218,13 +218,13 @@ Vector2i GridLayout::preferredSize(NVGcontext *ctx,
 
 void GridLayout::computeLayout(NVGcontext *ctx, const Widget *widget, std::vector<int> *grid) const {
     int axis1 = (int) mOrientation, axis2 = (axis1 + 1) % 2;
-    size_t numChildren = widget->children().size(), visibleRecursiveChildren = 0;
+    size_t numChildren = widget->children().size(), visibleChildren = 0;
     for (auto w : widget->children())
-        visibleRecursiveChildren += w->visibleRecursive() ? 1 : 0;
+        visibleChildren += w->visibleRecursive() ? 1 : 0;
 
     Vector2i dim;
     dim[axis1] = mResolution;
-    dim[axis2] = (int) ((visibleRecursiveChildren + mResolution - 1) / mResolution);
+    dim[axis2] = (int) ((visibleChildren + mResolution - 1) / mResolution);
 
     grid[axis1].clear(); grid[axis1].resize(dim[axis1], 0);
     grid[axis2].clear(); grid[axis2].resize(dim[axis2], 0);
