@@ -41,15 +41,15 @@ void Popup::refreshRelativePlacement() {
   mPos = mParentWindow->position() + mAnchorPos - Vector2i(0, mAnchorHeight);
 
   // Prevent popup from going off screen
-  // int bottomOffset =
-  //     (absolutePosition().y() + mSize.y()) - screen()->size().y();
-  // if (bottomOffset > 0) {
-  //   mPos.y() -= bottomOffset;
-  // }
-  // int topOffset = absolutePosition().y();
-  // if (topOffset < 0) {
-  //   mPos.y() -= topOffset;
-  // }
+  int bottomOffset =
+      (absolutePosition().y() + mSize.y()) - screen()->size().y();
+  if (bottomOffset > 0) {
+    mPos.y() -= bottomOffset;
+  }
+  int topOffset = absolutePosition().y();
+  if (topOffset < 0) {
+    mPos.y() -= topOffset;
+  }
 }
 
 void Popup::draw(NVGcontext* ctx) {
