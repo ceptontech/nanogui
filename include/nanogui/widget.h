@@ -246,6 +246,8 @@ public:
     /// Compute the preferred size of the widget
     virtual Vector2i preferredSize(NVGcontext *ctx) const;
 
+    virtual void refresh();
+
     /// Invoke the associated layout generator to properly place child widgets, if any
     virtual void performLayout(NVGcontext *ctx);
 

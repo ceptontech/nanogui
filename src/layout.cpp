@@ -41,7 +41,7 @@ Vector2i BoxLayout::preferredSize(NVGcontext *ctx, const Widget *widget) const {
     bool first = true;
     int axis1 = (int) mOrientation, axis2 = ((int) mOrientation + 1)%2;
     for (auto w : widget->children()) {
-        if (!w->visibleRecursive())
+        if (!w->visible())
             continue;
         if (first)
             first = false;
@@ -84,7 +84,7 @@ void BoxLayout::performLayout(NVGcontext *ctx, Widget *widget) const {
 
     bool first = true;
     for (auto w : widget->children()) {
-        if (!w->visibleRecursive())
+        if (!w->visible())
             continue;
         if (first)
             first = false;
@@ -134,7 +134,7 @@ Vector2i GroupLayout::preferredSize(NVGcontext *ctx, const Widget *widget) const
 
     bool first = true, indent = false;
     for (auto c : widget->children()) {
-        if (!c->visibleRecursive())
+        if (!c->visible())
             continue;
         const Label *label = dynamic_cast<const Label *>(c);
         if (!first)
@@ -168,7 +168,7 @@ void GroupLayout::performLayout(NVGcontext *ctx, Widget *widget) const {
 
     bool first = true, indent = false;
     for (auto c : widget->children()) {
-        if (!c->visibleRecursive())
+        if (!c->visible())
             continue;
         const Label *label = dynamic_cast<const Label *>(c);
         if (!first)
@@ -220,7 +220,7 @@ void GridLayout::computeLayout(NVGcontext *ctx, const Widget *widget, std::vecto
     int axis1 = (int) mOrientation, axis2 = (axis1 + 1) % 2;
     size_t numChildren = widget->children().size(), visibleChildren = 0;
     for (auto w : widget->children())
-        visibleChildren += w->visibleRecursive() ? 1 : 0;
+        visibleChildren += w->visible() ? 1 : 0;
 
     Vector2i dim;
     dim[axis1] = mResolution;
@@ -237,7 +237,7 @@ void GridLayout::computeLayout(NVGcontext *ctx, const Widget *widget, std::vecto
                 if (child >= numChildren)
                     return;
                 w = widget->children()[child++];
-            } while (!w->visibleRecursive());
+            } while (!w->visible());
 
             Vector2i ps = w->preferredSize(ctx);
             Vector2i fs = w->fixedSize();
@@ -305,7 +305,7 @@ void GridLayout::performLayout(NVGcontext *ctx, Widget *widget) const {
                 if (child >= numChildren)
                     return;
                 w = widget->children()[child++];
-            } while (!w->visibleRecursive());
+            } while (!w->visible());
 
             Vector2i ps = w->preferredSize(ctx);
             Vector2i fs = w->fixedSize();
@@ -385,7 +385,7 @@ void AdvancedGridLayout::performLayout(NVGcontext *ctx, Widget *widget) const {
             grid[axis][i] += grid[axis][i-1];
 
         for (Widget *w : widget->children()) {
-            if (!w->visibleRecursive())
+            if (!w->visible())
                 continue;
             Anchor anchor = this->anchor(w);
 
@@ -444,7 +444,7 @@ void AdvancedGridLayout::computeLayout(NVGcontext *ctx, const Widget *widget,
         for (int phase = 0; phase < 2; ++phase) {
             for (auto pair : mAnchor) {
                 const Widget *w = pair.first;
-                if (!w->visibleRecursive())
+                if (!w->visible())
                     continue;
                 const Anchor &anchor = pair.second;
                 if ((anchor.size[axis] == 1) != (phase == 0))

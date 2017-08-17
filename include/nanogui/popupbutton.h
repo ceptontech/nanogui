@@ -38,6 +38,7 @@ public:
     Popup *popup() { return mPopup.get(); }
     const Popup *popup() const { return mPopup.get(); }
 
+    virtual void refresh() override;
     virtual void draw(NVGcontext* ctx) override;
     virtual Vector2i preferredSize(NVGcontext *ctx) const override;
     virtual void performLayout(NVGcontext *ctx) override;

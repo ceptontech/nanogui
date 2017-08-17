@@ -23,8 +23,7 @@ PopupButton::PopupButton(Widget *parent, const std::string &caption, int buttonI
 
     setFlags(Flags::ToggleButton | Flags::PopupButton);
 
-    Window *parentWindow = window();
-    mPopup = new Popup(parentWindow->parent(), window());
+    mPopup = new Popup((Widget *)screen(), window());
     mPopup->setSize(Vector2i(320, 250));
     mPopup->setVisible(false);
 }
@@ -39,11 +38,16 @@ Vector2i PopupButton::preferredSize(NVGcontext *ctx) const {
     return Button::preferredSize(ctx) + Vector2i(15, 0);
 }
 
-void PopupButton::draw(NVGcontext* ctx) {
-    if (!mEnabled && mPushed)
-        mPushed = false;
+void PopupButton::refresh() {
+  Button::refresh();
 
-    mPopup->setVisible(mPushed);
+  if ((!mEnabled || !visibleRecursive()) && mPushed)
+      mPushed = false;
+
+  mPopup->setVisible(mPushed);
+}
+
+void PopupButton::draw(NVGcontext* ctx) {
     Button::draw(ctx);
 
     if (mChevronIcon) {

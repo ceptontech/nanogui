@@ -75,6 +75,12 @@ Vector2i Widget::preferredSize(NVGcontext *ctx) const {
         return mSize;
 }
 
+void Widget::refresh() {
+  for (auto c : mChildren) {
+    c->refresh();
+  }
+}
+
 void Widget::performLayout(NVGcontext *ctx) {
     if (mLayout) {
         mLayout->performLayout(ctx, this);
