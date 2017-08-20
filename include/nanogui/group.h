@@ -14,7 +14,7 @@ class NANOGUI_EXPORT Group : public Object {
   void removeWidget(Widget *widget) {mWidgets.erase(widget); }
 
   const std::set<Widget *> &widgets() const { return mWidgets; }
-  int widgetCount() const { return mWidgets.size(); }
+  size_t widgetCount() const { return mWidgets.size(); }
 
   bool visible() const;
   bool visibleRecursive() const;

@@ -118,7 +118,6 @@ public:
 
     /// Check if this widget is currently visible, taking parent widgets into account
     bool visibleRecursive() const {
-        bool visible = true;
         const Widget *widget = this;
         while (widget) {
             if (!widget->visible()) return false;

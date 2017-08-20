@@ -391,7 +391,7 @@ void AdvancedGridLayout::performLayout(NVGcontext *ctx, Widget *widget) const {
 
             int itemPos = grid[axis][anchor.pos[axis]];
             int cellSize  = grid[axis][anchor.pos[axis] + anchor.size[axis]] - itemPos;
-            int ps = w->preferredSize(ctx)[axis], fs = w->fixedSize()[axis];
+            int /* ps = w->preferredSize(ctx)[axis], */ fs = w->fixedSize()[axis];
             int targetSize = fs ? fs : cellSize;
             switch (anchor.align[axis]) {
                 case Alignment::FillMinimum:
