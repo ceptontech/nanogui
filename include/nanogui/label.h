@@ -40,7 +40,7 @@ public:
     const std::string &font() const { return mFont; }
 
     void setTextAlignment(int textAlignment) { mTextAlignment = textAlignment; }
-    const int textAlignment() const { return mTextAlignment; }
+    int textAlignment() const { return mTextAlignment; }
 
     /// Get the label color
     Color color() const { return mColor; }
