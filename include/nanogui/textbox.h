@@ -137,22 +137,32 @@ public:
     IntBox(Widget *parent, Scalar value = (Scalar) 0) : TextBox(parent) {
         setDefaultValue("0");
         setFormat(std::is_signed<Scalar>::value ? "[-]?[0-9]*" : "[0-9]*");
+        setValuePrecision(0);
         setValueIncrement(1);
         setMinMaxValues(std::numeric_limits<Scalar>::lowest(), std::numeric_limits<Scalar>::max());
         setValue(value);
         setSpinnable(false);
     }
 
+    Scalar roundValue(Scalar value) const {
+      if (mValuePrecision == 0) {
+        return value;
+      } else {
+        return (value / mValuePrecision) * mValuePrecision;
+      }
+    }
+
     Scalar value() const {
         std::istringstream iss(TextBox::value());
         Scalar value = 0;
         iss >> value;
-        return value;
+        return roundValue(value);
     }
 
     void setValue(Scalar value) {
-        Scalar clampedValue = std::min(std::max(value, mMinValue),mMaxValue);
-        TextBox::setValue(std::to_string(clampedValue));
+      Scalar clampedValue =
+          std::min(std::max(roundValue(value), mMinValue), mMaxValue);
+      TextBox::setValue(std::to_string(clampedValue));
     }
 
     void setCallback(const std::function<void(Scalar)> &cb) {
@@ -168,6 +178,9 @@ public:
         );
     }
 
+    void setValuePrecision(Scalar precision) {
+        mValuePrecision = precision;
+    }
     void setValueIncrement(Scalar incr) {
         mValueIncrement = incr;
     }
@@ -230,6 +243,7 @@ public:
     }
 private:
     Scalar mMouseDownValue;
+    Scalar mValuePrecision;
     Scalar mValueIncrement;
     Scalar mMinValue, mMaxValue;
 public:
@@ -251,6 +265,7 @@ public:
         mNumberFormat = sizeof(Scalar) == sizeof(float) ? "%.4g" : "%.7g";
         setDefaultValue("0");
         setFormat("[-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)?");
+        setValuePrecision((Scalar) 0);
         setValueIncrement((Scalar) 0.1);
         setMinMaxValues(std::numeric_limits<Scalar>::lowest(), std::numeric_limits<Scalar>::max());
         setValue(value);
@@ -260,12 +275,22 @@ public:
     std::string numberFormat() const { return mNumberFormat; }
     void numberFormat(const std::string &format) { mNumberFormat = format; }
 
+    Scalar roundValue(Scalar value) const {
+      if (mValuePrecision == 0) {
+        return value;
+      } else {
+        return std::round(value / mValuePrecision) * mValuePrecision;
+      }
+    }
+
     Scalar value() const {
-        return (Scalar) std::stod(TextBox::value());
+        return roundValue((Scalar) std::stod(TextBox::value()));
     }
 
     void setValue(Scalar value) {
-        Scalar clampedValue = std::min(std::max(value, mMinValue),mMaxValue);
+        Scalar clampedValue =
+            std::min(std::max(roundValue(value), mMinValue), mMaxValue);
+
         char buffer[50];
         NANOGUI_SNPRINTF(buffer, 50, mNumberFormat.c_str(), clampedValue);
         TextBox::setValue(buffer);
@@ -280,6 +305,9 @@ public:
         });
     }
 
+    void setValuePrecision(Scalar precision) {
+        mValuePrecision = precision;
+    }
     void setValueIncrement(Scalar incr) {
         mValueIncrement = incr;
     }
@@ -344,6 +372,7 @@ public:
 private:
     std::string mNumberFormat;
     Scalar mMouseDownValue;
+    Scalar mValuePrecision;
     Scalar mValueIncrement;
     Scalar mMinValue, mMaxValue;
 public:
