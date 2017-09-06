@@ -10,8 +10,11 @@ class Widget;
 
 class NANOGUI_EXPORT Group : public Object {
  public:
-  void addWidget(Widget *widget) { mWidgets.insert(widget); }
-  void removeWidget(Widget *widget) {mWidgets.erase(widget); }
+  void addWidget(Widget *widget);
+  void removeWidget(Widget *widget);
+
+  void addGroup(Group *group);
+  void removeGroup(Group *group);
 
   const std::set<Widget *> &widgets() const { return mWidgets; }
   size_t widgetCount() const { return mWidgets.size(); }

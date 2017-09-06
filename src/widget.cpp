@@ -40,6 +40,7 @@ Widget::~Widget() {
 }
 
 void Widget::setParent(Widget *parent) {
+  if (mParent == parent) return;
   if (mParent) {
     mParent->removeChild(this);
   }
@@ -47,10 +48,11 @@ void Widget::setParent(Widget *parent) {
 }
 
 void Widget::setGroup(Group *group) {
+  if (mGroup.get() == group) return;
   auto oldGroup = mGroup;
-  for (auto w : oldGroup->widgets()) {
-    w->mGroup = group;
+  for (auto &w : oldGroup->widgets()) {
     group->addWidget(w);
+    w->mGroup = group;
   }
 }
 
