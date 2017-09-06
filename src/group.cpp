@@ -17,7 +17,7 @@ bool Group::visibleRecursive() const {
 }
 
 void Group::setVisible(bool val) {
-  for (const auto &w : mWidgets) {
+  for (auto &w : mWidgets) {
     w->setVisible(val);
   }
 }

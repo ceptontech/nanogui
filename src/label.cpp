@@ -18,7 +18,8 @@ NAMESPACE_BEGIN(nanogui)
 
 Label::Label(Widget *parent, const std::string &caption, const std::string &font, int fontSize)
     : Widget(parent), mCaption(caption), mFont(font) {
-    mTextAlignment = NVG_ALIGN_LEFT;
+    mHorizontalTextAlignment = NVG_ALIGN_LEFT;
+    mVerticalTextAlignment = NVG_ALIGN_TOP;
     if (mTheme) {
         mFontSize = mTheme->mStandardFontSize;
         mColor = mTheme->mTextColor;
@@ -41,11 +42,11 @@ Vector2i Label::preferredSize(NVGcontext *ctx) const {
     nvgFontSize(ctx, fontSize());
     if (mFixedSize.x() > 0) {
         float bounds[4];
-        nvgTextAlign(ctx, mTextAlignment | NVG_ALIGN_TOP);
+        nvgTextAlign(ctx, textAlignment());
         nvgTextBoxBounds(ctx, mPos.x(), mPos.y(), mFixedSize.x(), mCaption.c_str(), nullptr, bounds);
         return Vector2i(mFixedSize.x(), bounds[3] - bounds[1]);
     } else {
-        nvgTextAlign(ctx, mTextAlignment | NVG_ALIGN_MIDDLE);
+        nvgTextAlign(ctx, textAlignment());
         return Vector2i(
             nvgTextBounds(ctx, 0, 0, mCaption.c_str(), nullptr, nullptr) + 2,
             fontSize()
@@ -58,12 +59,11 @@ void Label::draw(NVGcontext *ctx) {
     nvgFontFace(ctx, mFont.c_str());
     nvgFontSize(ctx, fontSize());
     nvgFillColor(ctx, mColor);
+    nvgTextAlign(ctx, textAlignment());
     if (mFixedSize.x() > 0) {
-        nvgTextAlign(ctx, mTextAlignment | NVG_ALIGN_TOP);
         nvgTextBox(ctx, mPos.x(), mPos.y(), mFixedSize.x(), mCaption.c_str(), nullptr);
     } else {
-        nvgTextAlign(ctx, mTextAlignment | NVG_ALIGN_MIDDLE);
-        nvgText(ctx, mPos.x(), mPos.y() + mSize.y() * 0.5f, mCaption.c_str(), nullptr);
+        nvgTextBox(ctx, mPos.x(), mPos.y(), mSize.x(), mCaption.c_str(), nullptr);
     }
 }
 

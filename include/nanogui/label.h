@@ -39,8 +39,19 @@ public:
     /// Get the currently active font
     const std::string &font() const { return mFont; }
 
-    void setTextAlignment(int textAlignment) { mTextAlignment = textAlignment; }
-    int textAlignment() const { return mTextAlignment; }
+    void setHorizontalTextAlignment(int textAlignment) {
+      mHorizontalTextAlignment = textAlignment;
+    }
+    int horizontalTextAlignment() const { return mHorizontalTextAlignment; }
+
+    void setVerticalTextAlignment(int textAlignment) {
+        mVerticalTextAlignment = textAlignment;
+    }
+    int verticalTextAlignment() const { return mVerticalTextAlignment; }
+
+    int textAlignment() const {
+        return mHorizontalTextAlignment | mVerticalTextAlignment;
+    }
 
     /// Get the label color
     Color color() const { return mColor; }
@@ -62,7 +73,8 @@ protected:
     std::string mCaption;
     std::string mFont;
     Color mColor;
-    int mTextAlignment;
+    int mHorizontalTextAlignment;
+    int mVerticalTextAlignment;
 public:
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 };
