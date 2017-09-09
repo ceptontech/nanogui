@@ -17,6 +17,7 @@
 
 #include <nanogui/compat.h>
 #include <nanogui/widget.h>
+#include <algorithm>
 #include <sstream>
 
 NAMESPACE_BEGIN(nanogui)
