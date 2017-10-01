@@ -41,8 +41,9 @@ void Popup::refreshRelativePlacement() {
   mPos = mParentWindow->position() + mAnchorPos - Vector2i(0, mAnchorHeight);
 
   // Prevent popup from going off screen
+  int pad = 10;
   int bottomOffset =
-      (absolutePosition().y() + mSize.y()) - screen()->size().y();
+      (absolutePosition().y() + mSize.y()) - screen()->size().y() + pad;
   if (bottomOffset > 0) {
     mPos.y() -= bottomOffset;
   }
