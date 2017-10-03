@@ -10,25 +10,15 @@ class Widget;
 
 class NANOGUI_EXPORT Group : public Object {
  public:
-  void addWidget(Widget *widget);
-  void removeWidget(Widget *widget);
+  bool visible() const { return mVisible; }
+  void setVisible(bool val) { mVisible = val; }
 
-  void addGroup(Group *group);
-  void removeGroup(Group *group);
-
-  const std::set<Widget *> &widgets() const { return mWidgets; }
-  size_t widgetCount() const { return mWidgets.size(); }
-
-  bool visible() const;
-  bool visibleRecursive() const;
-  void setVisible(bool val);
-
-  void destroy();
+  void destroy() { mIsDestroyed = true; }
+  bool isDestroyed() const { return mIsDestroyed; }
 
  private:
-  friend Widget;
-
-  std::set<Widget *> mWidgets;
+  bool mVisible = true;
+  bool mIsDestroyed = false;
 };
 
 NAMESPACE_END(nanogui)

@@ -168,4 +168,11 @@ private:
     T *m_ptr = nullptr;
 };
 
+template <typename T>
+struct RefCompare {
+  bool operator() (const ref<T> &lhs, const ref<T> &rhs) const {
+    return lhs.get() < rhs.get();
+  }
+};
+
 NAMESPACE_END(nanogui)

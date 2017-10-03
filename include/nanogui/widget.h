@@ -13,6 +13,7 @@
 #pragma once
 
 #include <nanogui/object.h>
+#include <set>
 #include <vector>
 
 NAMESPACE_BEGIN(nanogui)
@@ -41,9 +42,13 @@ public:
     /// Set the parent widget
     void setParent(Widget *parent);
 
-    Group *group() { return mGroup.get(); }
-    const Group *group() const { return mGroup.get(); }
-    void setGroup(Group *group);
+    bool hasGroup(Group *group) { return (mGroups.count(group) != 0); }
+    void addGroup(Group *group) {
+      mGroups.insert(group);
+    }
+    void removeGroup(Group *group) {
+      mGroups.erase(group);
+    }
 
     /// Dispose the widget
     void dispose() { mParent->removeChild(this); }
@@ -112,19 +117,12 @@ public:
     void setFixedHeight(int height) { mFixedSize.y() = height; }
 
     /// Return whether or not the widget is currently visible (assuming all parents are visible)
-    bool visible() const { return mVisible; }
+    bool visible() const;
     /// Set whether or not the widget is currently visible (assuming all parents are visible)
     void setVisible(bool visible) { mVisible = visible; }
 
     /// Check if this widget is currently visible, taking parent widgets into account
-    bool visibleRecursive() const {
-        const Widget *widget = this;
-        while (widget) {
-            if (!widget->visible()) return false;
-            widget = widget->parent();
-        }
-        return true;
-    }
+    bool visibleRecursive() const;
 
     /// Return the number of child widgets
     int childCount() const { return (int) mChildren.size(); }
@@ -265,7 +263,7 @@ protected:
 
 protected:
     Widget *mParent;
-    ref<Group> mGroup;
+    std::set<ref<Group>, RefCompare<Group>> mGroups;
     ref<Theme> mTheme;
     ref<Layout> mLayout;
     std::string mId;

@@ -26,8 +26,6 @@ Widget::Widget(Widget *parent)
       mFixedSize(Vector2i::Zero()), mVisible(true), mEnabled(true),
       mFocused(false), mMouseFocus(false), mTooltip(""), mFontSize(-1.0f),
       mCursor(Cursor::Arrow) {
-    mGroup = new Group();
-    mGroup->addWidget(this);
     if (parent)
         parent->addChild(this);
 }
@@ -45,15 +43,6 @@ void Widget::setParent(Widget *parent) {
     mParent->removeChild(this);
   }
   mParent = parent;
-}
-
-void Widget::setGroup(Group *group) {
-  if (mGroup.get() == group) return;
-  auto oldGroup = mGroup;
-  for (auto &w : oldGroup->widgets()) {
-    group->addWidget(w);
-    w->mGroup = group;
-  }
 }
 
 void Widget::setTheme(Theme *theme) {
@@ -163,6 +152,22 @@ bool Widget::keyboardEvent(int, int, int, int) {
 
 bool Widget::keyboardCharacterEvent(unsigned int) {
     return false;
+}
+
+bool Widget::visible() const {
+  for (const auto &group : mGroups) {
+    if (!group->visible()) return false;
+  }
+  return mVisible;
+}
+
+bool Widget::visibleRecursive() const {
+    const Widget *widget = this;
+    while (widget) {
+        if (!widget->visible()) return false;
+        widget = widget->parent();
+    }
+    return true;
 }
 
 void Widget::addChild(int index, Widget * widget) {
