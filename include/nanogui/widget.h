@@ -40,15 +40,11 @@ public:
     /// Return the parent widget
     const Widget *parent() const { return mParent; }
     /// Set the parent widget
-    void setParent(Widget *parent);
+    void setParent(Widget *parent = nullptr);
 
-    bool hasGroup(Group *group) { return (mGroups.count(group) != 0); }
-    void addGroup(Group *group) {
-      mGroups.insert(group);
-    }
-    void removeGroup(Group *group) {
-      mGroups.erase(group);
-    }
+    bool hasGroup(Group *group) const;
+    void addGroup(Group *group);
+    void removeGroup(Group *group);
 
     /// Dispose the widget
     void dispose() { mParent->removeChild(this); }
@@ -58,14 +54,14 @@ public:
     /// Return the used \ref Layout generator
     const Layout *layout() const { return mLayout.get(); }
     /// Set the used \ref Layout generator
-    void setLayout(Layout *layout) { mLayout = layout; }
+    void setLayout(Layout *layout = nullptr) { mLayout = layout; }
 
     /// Return the \ref Theme used to draw this widget
     Theme *theme() { return mTheme; }
     /// Return the \ref Theme used to draw this widget
     const Theme *theme() const { return mTheme.get(); }
     /// Set the \ref Theme used to draw this widget
-    virtual void setTheme(Theme *theme);
+    virtual void setTheme(Theme *theme = nullptr);
 
     /// Return the position relative to the parent widget
     const Vector2i &position() const { return mPos; }
@@ -130,6 +126,8 @@ public:
     /// Return the list of child widgets of the current widget
     const std::vector<Widget *> &children() const { return mChildren; }
 
+    bool hasChild(const Widget *widget) const;
+
     /**
      * \brief Add a child widget to the current widget at
      * the specified index.
@@ -147,7 +145,7 @@ public:
     void removeChild(int index);
 
     /// Remove a child widget by value
-    void removeChild(const Widget *widget);
+    void removeChild(Widget *widget);
 
     /// Remove all children
     void removeChildren();

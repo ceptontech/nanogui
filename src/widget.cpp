@@ -31,10 +31,7 @@ Widget::Widget(Widget *parent)
 }
 
 Widget::~Widget() {
-    for (auto child : mChildren) {
-        if (child)
-            child->decRef();
-    }
+  removeChildren();
 }
 
 void Widget::setParent(Widget *parent) {
@@ -43,6 +40,19 @@ void Widget::setParent(Widget *parent) {
     mParent->removeChild(this);
   }
   mParent = parent;
+}
+
+bool Widget::hasGroup(Group *group) const {
+  return (mGroups.count(group) != 0);
+}
+
+void Widget::addGroup(Group *group) {
+  if (!group) return;
+  mGroups.insert(group);
+}
+
+void Widget::removeGroup(Group *group) {
+  mGroups.erase(group);
 }
 
 void Widget::setTheme(Theme *theme) {
@@ -170,34 +180,45 @@ bool Widget::visibleRecursive() const {
     return true;
 }
 
+bool Widget::hasChild(const Widget *widget) const {
+  return (std::find(mChildren.begin(), mChildren.end(), widget) != mChildren.end());
+}
+
 void Widget::addChild(int index, Widget * widget) {
     assert(index <= childCount());
+    if (!hasChild(widget)) {
+      widget->incRef();
+      widget->setParent(this);
+      widget->setTheme(mTheme);
+    }
     mChildren.insert(mChildren.begin() + index, widget);
-    widget->incRef();
-    widget->setParent(this);
-    widget->setTheme(mTheme);
 }
 
 void Widget::addChild(Widget * widget) {
     addChild(childCount(), widget);
 }
 
-void Widget::removeChild(const Widget *widget) {
+void Widget::removeChild(Widget *widget) {
     mChildren.erase(std::remove(mChildren.begin(), mChildren.end(), widget), mChildren.end());
-    widget->decRef();
+    if (!hasChild(widget)) {
+      widget->mParent = nullptr;
+      widget->decRef();
+    }
 }
 
 void Widget::removeChild(int index) {
     Widget *widget = mChildren[index];
     mChildren.erase(mChildren.begin() + index);
-    widget->decRef();
+    if (!hasChild(widget)) {
+      widget->mParent = nullptr;
+      widget->decRef();
+    }
 }
 
 void Widget::removeChildren() {
-  for (auto &child : mChildren) {
-    child->decRef();
+  while (childCount() > 0) {
+    removeChild(childCount() - 1);
   }
-  mChildren.clear();
 }
 
 int Widget::childIndex(Widget *widget) const {
