@@ -40,28 +40,28 @@ public:
     /// Return the parent widget
     const Widget *parent() const { return mParent; }
     /// Set the parent widget
-    void setParent(Widget *parent = nullptr);
+    void setParent(Widget *parent);
 
     bool hasGroup(Group *group) const;
     void addGroup(Group *group);
     void removeGroup(Group *group);
 
     /// Dispose the widget
-    void dispose() { mParent->removeChild(this); }
+    virtual void dispose();
 
     /// Return the used \ref Layout generator
     Layout *layout() { return mLayout; }
     /// Return the used \ref Layout generator
     const Layout *layout() const { return mLayout.get(); }
     /// Set the used \ref Layout generator
-    void setLayout(Layout *layout = nullptr) { mLayout = layout; }
+    void setLayout(Layout *layout) { mLayout = layout; }
 
     /// Return the \ref Theme used to draw this widget
     Theme *theme() { return mTheme; }
     /// Return the \ref Theme used to draw this widget
     const Theme *theme() const { return mTheme.get(); }
     /// Set the \ref Theme used to draw this widget
-    virtual void setTheme(Theme *theme = nullptr);
+    virtual void setTheme(Theme *theme);
 
     /// Return the position relative to the parent widget
     const Vector2i &position() const { return mPos; }
@@ -258,6 +258,8 @@ public:
 protected:
     /// Free all resources used by the widget and any children
     virtual ~Widget();
+
+    void disposeImpl(Screen *screen);
 
 protected:
     Widget *mParent;

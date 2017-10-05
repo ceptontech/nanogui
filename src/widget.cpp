@@ -30,8 +30,20 @@ Widget::Widget(Widget *parent)
         parent->addChild(this);
 }
 
-Widget::~Widget() {
-  removeChildren();
+Widget::~Widget() {}
+
+void Widget::dispose() {
+  auto screen_tmp = screen();
+  if (screen_tmp) disposeImpl(screen_tmp);
+
+  if (mParent) mParent->removeChild(this);
+}
+
+void Widget::disposeImpl(Screen *screen) {
+  screen->disposeWidget(this);
+  for (auto child : mChildren) {
+    child->disposeImpl(screen);
+  }
 }
 
 void Widget::setParent(Widget *parent) {
@@ -199,15 +211,14 @@ void Widget::addChild(Widget * widget) {
 }
 
 void Widget::removeChild(Widget *widget) {
+    if (!hasChild(widget)) return;
     mChildren.erase(std::remove(mChildren.begin(), mChildren.end(), widget), mChildren.end());
-    if (!hasChild(widget)) {
-      widget->mParent = nullptr;
-      widget->decRef();
-    }
+    widget->mParent = nullptr;
+    widget->decRef();
 }
 
 void Widget::removeChild(int index) {
-    Widget *widget = mChildren[index];
+    Widget *widget = mChildren.at(index);
     mChildren.erase(mChildren.begin() + index);
     if (!hasChild(widget)) {
       widget->mParent = nullptr;

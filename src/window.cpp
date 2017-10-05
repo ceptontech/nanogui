@@ -141,18 +141,9 @@ void Window::draw(NVGcontext *ctx) {
     Widget::draw(ctx);
 }
 
-void Window::dispose() {
-    Widget *widget = this;
-    while (widget->parent())
-        widget = widget->parent();
-    ((Screen *) widget)->disposeWindow(this);
-}
-
 void Window::center() {
-    Widget *widget = this;
-    while (widget->parent())
-        widget = widget->parent();
-    ((Screen *) widget)->centerWindow(this);
+    auto screen_tmp = screen();
+    if (screen_tmp) screen_tmp->centerWindow(this);
 }
 
 bool Window::mouseDragEvent(const Vector2i &, const Vector2i &rel,

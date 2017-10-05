@@ -39,9 +39,6 @@ public:
     /// Return the panel used to house window buttons
     Widget *buttonPanel();
 
-    /// Dispose the window
-    void dispose();
-
     /// Center the window in the current \ref Screen
     void center();
 
