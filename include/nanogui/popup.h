@@ -32,6 +32,8 @@ public:
     /// Create a new popup parented to a screen (first argument) and a parent window
     Popup(Widget *parent, Window *parentWindow);
 
+    virtual Vector2i preferredSize(NVGcontext *ctx) const override;
+    
     /// Return the anchor position in the parent window; the placement of the popup is relative to it
     void setAnchorPos(const Vector2i &anchorPos) { mAnchorPos = anchorPos; }
     /// Set the anchor position in the parent window; the placement of the popup is relative to it

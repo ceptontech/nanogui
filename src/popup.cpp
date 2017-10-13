@@ -23,6 +23,12 @@ Popup::Popup(Widget *parent, Window *parentWindow)
       mAnchorPos(Vector2i::Zero()), mAnchorHeight(30), mSide(Side::Right) {
 }
 
+Vector2i Popup::preferredSize(NVGcontext *ctx) const {
+  Vector2i result = Window::preferredSize(ctx);
+  result[1] = std::max(result[1], 2 * mAnchorHeight);
+  return result;
+}
+
 void Popup::performLayout(NVGcontext *ctx) {
     if (mLayout || mChildren.size() != 1) {
         Widget::performLayout(ctx);
