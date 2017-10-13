@@ -33,16 +33,20 @@ Widget::Widget(Widget *parent)
 Widget::~Widget() {}
 
 void Widget::dispose() {
-  auto screen_tmp = screen();
-  if (screen_tmp) disposeImpl(screen_tmp);
+  disposeImpl();
 
   if (mParent) mParent->removeChild(this);
 }
 
-void Widget::disposeImpl(Screen *screen) {
-  screen->disposeWidget(this);
+void Widget::disposeImpl() {
+  Widget *parent = mParent;
+  while(parent) {
+    parent->disposeWidget(this);
+    parent = parent->parent();
+  }
+
   for (auto child : mChildren) {
-    child->disposeImpl(screen);
+    child->disposeImpl();
   }
 }
 

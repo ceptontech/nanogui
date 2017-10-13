@@ -179,7 +179,7 @@ public:
 
     /* Internal helper functions */
     void updateFocus(Widget *widget);
-    void disposeWidget(Widget *widget);
+    virtual void disposeWidget(Widget *widget) override;
     void centerWindow(Window *window);
     void moveWindowToFront(Window *window);
     void drawWidgets();

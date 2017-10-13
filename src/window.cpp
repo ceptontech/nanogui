@@ -12,6 +12,7 @@
 #include <nanogui/window.h>
 #include <nanogui/theme.h>
 #include <nanogui/opengl.h>
+#include <nanogui/popupbutton.h>
 #include <nanogui/screen.h>
 #include <nanogui/layout.h>
 #include <nanogui/serializer/core.h>
@@ -176,6 +177,12 @@ void Window::refreshRelativePlacement() {
     /* Overridden in \ref Popup */
 }
 
+void Window::setActivePopupButton(PopupButton *popupButton) {
+  if (mActivePopupButton && (mActivePopupButton != popupButton))
+      mActivePopupButton->setPushed(false);
+  mActivePopupButton = popupButton;
+}
+
 void Window::save(Serializer &s) const {
     Widget::save(s);
     s.set("title", mTitle);
@@ -188,6 +195,13 @@ bool Window::load(Serializer &s) {
     if (!s.get("modal", mModal)) return false;
     mDrag = false;
     return true;
+}
+
+void Window::disposeWidget(Widget *widget) {
+    Widget::disposeWidget(widget);
+
+    if (widget == mActivePopupButton)
+        mActivePopupButton = nullptr;
 }
 
 NAMESPACE_END(nanogui)

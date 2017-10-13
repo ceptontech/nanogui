@@ -15,6 +15,8 @@
 #include <nanogui/opengl.h>
 #include <nanogui/serializer/core.h>
 
+#include <iostream>
+
 NAMESPACE_BEGIN(nanogui)
 
 PopupButton::PopupButton(Widget *parent, const std::string &caption, int buttonIcon)
@@ -41,8 +43,12 @@ Vector2i PopupButton::preferredSize(NVGcontext *ctx) const {
 void PopupButton::refresh() {
   Button::refresh();
 
-  if ((!mEnabled || !visibleRecursive()) && mPushed)
+  if (mPushed && (!mEnabled || !visibleRecursive()))
       mPushed = false;
+
+
+  if (mPushed)
+      window()->setActivePopupButton(this);
 
   mPopup->setVisible(mPushed);
 }

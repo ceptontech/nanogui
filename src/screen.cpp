@@ -646,12 +646,15 @@ void Screen::updateFocus(Widget *widget) {
 }
 
 void Screen::disposeWidget(Widget *widget) {
+  Widget::disposeWidget(widget);
+
   auto it = (std::find(mFocusPath.begin(), mFocusPath.end(), widget));
-  mFocusPath.erase(it, mFocusPath.end());
+  if (it != mFocusPath.end())
+      mFocusPath.erase(it, mFocusPath.end());
 
   if (mDragWidget == widget) {
-    mDragActive = false;
-    mDragWidget = nullptr;
+      mDragActive = false;
+      mDragWidget = nullptr;
   }
 }
 

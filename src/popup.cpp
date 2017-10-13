@@ -43,7 +43,6 @@ void Popup::performLayout(NVGcontext *ctx) {
 
 void Popup::refreshRelativePlacement() {
   mParentWindow->refreshRelativePlacement();
-  mVisible &= mParentWindow->visibleRecursive();
   mPos = mParentWindow->position() + mAnchorPos - Vector2i(0, mAnchorHeight);
 
   // Prevent popup from going off screen
@@ -57,6 +56,10 @@ void Popup::refreshRelativePlacement() {
   if (topOffset < 0) {
     mPos.y() -= topOffset;
   }
+
+  // Refresh visibility
+  if (mVisible && !mParentWindow->visibleRecursive())
+      mVisible = false;
 }
 
 void Popup::draw(NVGcontext* ctx) {

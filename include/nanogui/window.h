@@ -16,6 +16,8 @@
 
 NAMESPACE_BEGIN(nanogui)
 
+class PopupButton;
+
 /**
  * \class Window window.h nanogui/window.h
  *
@@ -39,6 +41,9 @@ public:
     /// Return the panel used to house window buttons
     Widget *buttonPanel();
 
+    void setActivePopupButton(PopupButton *popupButton);
+    PopupButton *activePopupButton() { return mActivePopupButton; }
+
     /// Center the window in the current \ref Screen
     void center();
 
@@ -56,12 +61,14 @@ public:
     virtual void performLayout(NVGcontext *ctx) override;
     virtual void save(Serializer &s) const override;
     virtual bool load(Serializer &s) override;
+    virtual void disposeWidget(Widget *widget) override;
 protected:
     /// Internal helper function to maintain nested window position values; overridden in \ref Popup
     virtual void refreshRelativePlacement();
 protected:
     std::string mTitle;
     Widget *mButtonPanel;
+    PopupButton *mActivePopupButton = nullptr;
     bool mModal;
     bool mDrag;
 public:
