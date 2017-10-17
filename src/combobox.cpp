@@ -14,6 +14,8 @@
 #include <nanogui/serializer/core.h>
 #include <cassert>
 
+#include <iostream>
+
 NAMESPACE_BEGIN(nanogui)
 
 ComboBox::ComboBox(Widget *parent) : PopupButton(parent), mSelectedIndex(0) {
@@ -30,10 +32,13 @@ ComboBox::ComboBox(Widget *parent, const std::vector<std::string> &items, const 
 }
 
 void ComboBox::setSelectedIndex(int idx) {
-    if (mItemsShort.empty())
+    if (itemCount() == 0)
         return;
+    if (idx >= itemCount())
+        idx = 0;
     const std::vector<Widget *> &children = popup()->children();
-    ((Button *) children[mSelectedIndex])->setPushed(false);
+    if (mSelectedIndex < itemCount())
+        ((Button *) children[mSelectedIndex])->setPushed(false);
     ((Button *) children[idx])->setPushed(true);
     mSelectedIndex = idx;
     setCaption(mItemsShort[idx]);
@@ -41,12 +46,11 @@ void ComboBox::setSelectedIndex(int idx) {
 
 void ComboBox::setItems(const std::vector<std::string> &items, const std::vector<std::string> &itemsShort) {
     assert(items.size() == itemsShort.size());
-    mItems = items;
-    mItemsShort = itemsShort;
     if (mSelectedIndex < 0 || mSelectedIndex >= (int) items.size())
         mSelectedIndex = 0;
-    while (mPopup->childCount() != 0)
-        mPopup->removeChild(mPopup->childCount()-1);
+    mItems = items;
+    mItemsShort = itemsShort;
+    mPopup->removeChildren();
     mPopup->setLayout(new GroupLayout(10));
     int index = 0;
     for (const auto &str: items) {

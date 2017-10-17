@@ -42,6 +42,7 @@ public:
     int selectedIndex() const { return mSelectedIndex; }
     void setSelectedIndex(int idx);
 
+    int itemCount() const { return (int) mItems.size(); }
     void setItems(const std::vector<std::string> &items, const std::vector<std::string> &itemsShort);
     void setItems(const std::vector<std::string> &items) { setItems(items, items); }
     const std::vector<std::string> &items() const { return mItems; }
