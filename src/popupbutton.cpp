@@ -36,6 +36,12 @@ PopupButton::~PopupButton() {
   }
 }
 
+void PopupButton::disposeImpl() {
+  Button::disposeImpl();
+
+  mPopup->dispose();
+}
+
 Vector2i PopupButton::preferredSize(NVGcontext *ctx) const {
     return Button::preferredSize(ctx) + Vector2i(15, 0);
 }

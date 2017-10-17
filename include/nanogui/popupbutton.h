@@ -45,6 +45,10 @@ public:
 
     virtual void save(Serializer &s) const override;
     virtual bool load(Serializer &s) override;
+
+protected:
+    virtual void disposeImpl() override;
+
 protected:
     nanogui::ref<Popup> mPopup;
     int mChevronIcon;

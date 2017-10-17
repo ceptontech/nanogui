@@ -255,13 +255,15 @@ public:
     /// Restore the state of the widget from the given \ref Serializer instance
     virtual bool load(Serializer &s);
 
+    /// Called when a child widget is being disposed
     virtual void disposeWidget(Widget *widget) { (void)widget; }
 
 protected:
     /// Free all resources used by the widget and any children
     virtual ~Widget();
 
-    void disposeImpl();
+    /// Called when a parent is being disposed
+    virtual void disposeImpl();
 
 protected:
     Widget *mParent;
