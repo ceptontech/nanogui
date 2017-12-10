@@ -85,13 +85,13 @@ void register_layout(py::module &m) {
     py::class_<AdvancedGridLayout::Anchor>(advGridLayout, "Anchor")
         .def(py::init<int, int, Alignment, Alignment>(),
              py::arg("x"), py::arg("y"),
-             py::arg("horiz") = Alignment::Fill,
-             py::arg("vert") = Alignment::Fill,
+             py::arg("horiz") = Alignment::FillMinimum,
+             py::arg("vert") = Alignment::FillMinimum,
              D(AdvancedGridLayout, Anchor, Anchor, 2))
         .def(py::init<int, int, int, int, Alignment, Alignment>(),
              py::arg("x"), py::arg("y"), py::arg("w"), py::arg("h"),
-             py::arg("horiz") = Alignment::Fill,
-             py::arg("vert") = Alignment::Fill,
+             py::arg("horiz") = Alignment::FillMinimum,
+             py::arg("vert") = Alignment::FillMinimum,
              D(AdvancedGridLayout, Anchor, Anchor, 3));
 }
 

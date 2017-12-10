@@ -222,11 +222,13 @@ PYBIND11_PLUGIN(nanogui) {
         .value("HResize", Cursor::HResize)
         .value("VResize", Cursor::VResize);
 
-    py::enum_<Alignment>(m, "Alignment", D(Alignment))
-        .value("Minimum", Alignment::Minimum)
-        .value("Middle", Alignment::Middle)
-        .value("Maximum", Alignment::Maximum)
-        .value("Fill", Alignment::Fill);
+	py::enum_<Alignment>(m, "Alignment", D(Alignment))
+		.value("Minimum", Alignment::Minimum)
+		.value("Middle", Alignment::Middle)
+		.value("Maximum", Alignment::Maximum)
+		.value("FillMinimum", Alignment::FillMinimum)
+		.value("FillMiddle", Alignment::FillMiddle)
+		.value("FillMaximum", Alignment::FillMaximum);
 
     py::enum_<Orientation>(m, "Orientation", D(Orientation))
         .value("Horizontal", Orientation::Horizontal)
