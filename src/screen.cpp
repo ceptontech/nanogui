@@ -680,8 +680,10 @@ void Screen::centerWindow(Window *window) {
 }
 
 void Screen::moveWindowToFront(Window *window) {
+    window->incRef(); // Never lose reference during reattach
     removeChild(window);
     addChild(window);
+    window->decRef();
     /* Brute force topological sort (no problem for a few windows..) */
     bool changed = false;
     do {
