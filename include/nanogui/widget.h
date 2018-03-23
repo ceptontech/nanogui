@@ -123,6 +123,9 @@ public:
     /// Return the number of child widgets
     int childCount() const { return (int) mChildren.size(); }
 
+    /// Return the number of visible child widgets
+    int visibleChildCount() const;
+
     /// Return the list of child widgets of the current widget
     const std::vector<Widget *> &children() const { return mChildren; }
 

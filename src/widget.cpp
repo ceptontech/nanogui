@@ -196,6 +196,14 @@ bool Widget::visibleRecursive() const {
     return true;
 }
 
+int Widget::visibleChildCount() const {
+    int n = 0;
+    for (const auto child : mChildren) {
+        if (child->visible()) ++n;
+    }
+    return n;
+}
+
 bool Widget::hasChild(const Widget *widget) const {
   return (std::find(mChildren.begin(), mChildren.end(), widget) != mChildren.end());
 }
