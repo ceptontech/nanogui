@@ -33,7 +33,7 @@ void HScrollPanel::performLayout(NVGcontext *ctx) {
 
     if (mChildPreferredWidth > mSize.x()) {
         child->setPosition(Vector2i(-mScroll * (mChildPreferredWidth - mSize.x()), 0));
-        child->setSize(Vector2i(mChildPreferredWidth - 12, mSize.y()));
+        child->setSize(Vector2i(mChildPreferredWidth, mSize.y() - 12));
     }
     else {
         child->setPosition(Vector2i::Zero());
