@@ -16,42 +16,35 @@
 
 NAMESPACE_BEGIN(nanogui)
 
-StackedWidget::StackedWidget(nanogui::Widget *parent)
-    : Widget(parent) { }
+StackedWidget::StackedWidget(nanogui::Widget *parent) : Widget(parent) {}
 
 void StackedWidget::setSelectedIndex(int index) {
-    assert(index < childCount());
-    if (mSelectedIndex >= 0)
-        mChildren[mSelectedIndex]->setVisible(false);
-    mSelectedIndex = index;
-    mChildren[mSelectedIndex]->setVisible(true);
+  assert(index < childCount());
+  if (mSelectedIndex >= 0) mChildren[mSelectedIndex]->setVisible(false);
+  mSelectedIndex = index;
+  mChildren[mSelectedIndex]->setVisible(true);
 }
 
-int StackedWidget::selectedIndex() const {
-    return mSelectedIndex;
-}
+int StackedWidget::selectedIndex() const { return mSelectedIndex; }
 
 void StackedWidget::performLayout(NVGcontext *ctx) {
-    for (auto child : mChildren) {
-        child->setPosition(Vector2i::Zero());
-        child->setSize(mSize);
-        child->performLayout(ctx);
-    }
+  for (auto child : mChildren) {
+    child->setPosition(Vector2i::Zero());
+    child->setSize(mSize);
+    child->performLayout(ctx);
+  }
 }
 
 Vector2i StackedWidget::preferredSize(NVGcontext *ctx) const {
-    Vector2i size = Vector2i::Zero();
-    for (auto child : mChildren)
-        size = size.cwiseMax(child->preferredSize(ctx));
-    return size;
+  Vector2i size = Vector2i::Zero();
+  for (auto child : mChildren) size = size.cwiseMax(child->preferredSize(ctx));
+  return size;
 }
 
 void StackedWidget::addChild(int index, Widget *widget) {
-    if (mSelectedIndex >= 0)
-        mChildren[mSelectedIndex]->setVisible(false);
-    Widget::addChild(index, widget);
-    widget->setVisible(true);
-    setSelectedIndex(index);
+  widget->setVisible(false);
+  Widget::addChild(index, widget);
+  if (mSelectedIndex < 0) setSelectedIndex(index);
 }
 
 NAMESPACE_END(nanogui)

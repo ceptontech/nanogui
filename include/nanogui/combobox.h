@@ -49,6 +49,8 @@ class NANOGUI_EXPORT ComboBox : public PopupButton {
       const std::vector<std::string> &items,
       const std::vector<std::string> &itemsShort = std::vector<std::string>(),
       const std::vector<std::string> &tooltips = std::vector<std::string>());
+  Button *addItem(const std::string &item, const std::string &itemShort = "",
+               const std::string &tooltip = "");
   const std::vector<std::string> &items() const { return mItems; }
   const std::vector<std::string> &itemsShort() const { return mItemsShort; }
 

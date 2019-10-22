@@ -21,22 +21,28 @@ VScrollPanel::VScrollPanel(Widget *parent)
     : Widget(parent), mChildPreferredHeight(0), mScroll(0.0f), mUpdateLayout(false) { }
 
 void VScrollPanel::performLayout(NVGcontext *ctx) {
+    if (mLayout)
+        throw std::runtime_error("VScrollPanel cannot have layout.");
+    if (mChildren.size() > 1)
+        throw std::runtime_error("VScrollPanel should have one child.");
+
     Widget::performLayout(ctx);
 
     if (mChildren.empty())
         return;
-    if (mChildren.size() > 1)
-        throw std::runtime_error("VScrollPanel should have one child.");
+
+    if (!mFixedSize.y() && mParent)
+        mSize.y() = mParent->height() - mPos.y();
 
     Widget *child = mChildren[0];
     mChildPreferredHeight = child->preferredSize(ctx).y();
 
     if (mChildPreferredHeight > mSize.y()) {
-        child->setPosition(Vector2i(0, -mScroll*(mChildPreferredHeight - mSize.y())));
-        child->setSize(Vector2i(mSize.x()-12, mChildPreferredHeight));
+        child->setPosition(Vector2i(0, -mScroll * (mChildPreferredHeight - mSize.y())));
+        child->setSize(Vector2i(mSize.x() - 12, mChildPreferredHeight));
     } else {
         child->setPosition(Vector2i::Zero());
-        child->setSize(mSize);
+        child->setSize(mSize - Vector2i(12, 0));
         mScroll = 0;
     }
     child->performLayout(ctx);

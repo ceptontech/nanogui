@@ -18,7 +18,9 @@
 
 NAMESPACE_BEGIN(nanogui)
 
-ComboBox::ComboBox(Widget *parent) : PopupButton(parent), mSelectedIndex(0) {}
+ComboBox::ComboBox(Widget *parent) : PopupButton(parent), mSelectedIndex(0) {
+  setItems({});
+}
 
 ComboBox::ComboBox(Widget *parent, const std::vector<std::string> &items)
     : PopupButton(parent), mSelectedIndex(0) {
@@ -49,26 +51,34 @@ void ComboBox::setItems(const std::vector<std::string> &items,
   assert(tooltips.empty() || (tooltips.size() == items.size()));
   if (mSelectedIndex < 0 || mSelectedIndex >= (int)items.size())
     mSelectedIndex = 0;
-  mItems = items;
-  mItemsShort = (itemsShort.empty()) ? items : itemsShort;
+  mItems.clear();
+  mItemsShort.clear();
   mPopup->removeChildren();
   mPopup->setLayout(new GroupLayout(10));
-  int index = 0;
   for (int i = 0; i < items.size(); ++i) {
-    const auto &str = items[i];
-    Button *button = new Button(mPopup, str);
-    button->setFlags(Button::RadioButton);
-    button->setCallback([&, index] {
-      mSelectedIndex = index;
-      setCaption(mItemsShort[index]);
-      setPushed(false);
-      popup()->setVisible(false);
-      if (mCallback) mCallback(index);
-    });
-    if (!tooltips.empty()) button->setTooltip(tooltips[i]);
-    index++;
+    addItem(items[i], (itemsShort.empty()) ? "" : itemsShort[i],
+            (tooltips.empty()) ? "" : tooltips[i]);
   }
   setSelectedIndex(mSelectedIndex);
+}
+
+Button *ComboBox::addItem(const std::string &item, const std::string &itemShort,
+                          const std::string &tooltip) {
+  const int index = mItems.size();
+  mItems.push_back(item);
+  mItemsShort.push_back((itemShort.empty()) ? item : itemShort);
+  auto button = new Button(mPopup, mItems[index]);
+  button->setFlags(Button::RadioButton);
+  button->setCallback([&, index] {
+    mSelectedIndex = index;
+    setCaption(mItemsShort[index]);
+    setPushed(false);
+    mPopup->setVisible(false);
+    if (mCallback) mCallback(index);
+  });
+  button->setTooltip(tooltip);
+  if (index == 0) setSelectedIndex(0);
+  return button;
 }
 
 bool ComboBox::scrollEvent(const Vector2i &p, const Vector2f &rel) {
